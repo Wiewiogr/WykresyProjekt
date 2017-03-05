@@ -2,11 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAction>
 #include <QBrush>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QResizeEvent>
+#include <QClipboard>
+#include <QImage>
+#include <QPainter>
 #include <QDebug>
+#include <QMenu>
+#include "graphdrawer.h"
+#include "graphmanager.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -21,18 +29,18 @@ public:
     ~MainWindow();
 
 private:
+    GraphDrawer drawer;
     Ui::MainWindow *ui;
-    QGraphicsScene *scene;
-    QGraphicsEllipseItem *ellipse;
-    QGraphicsRectItem *rectangle;
-    QGraphicsTextItem *text;
-    QGraphicsLineItem *line;
+    QMenu* menu;
+    QAction* down;
+    QAction* up;
     QSize currentSize;
+    GraphManager managers[2];
 
 public slots:
     void resizeEvent(QResizeEvent *event);
-
-
+    void graphDown();
+    void graphUp();
 };
 
 #endif // MAINWINDOW_H

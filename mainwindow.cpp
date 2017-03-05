@@ -6,24 +6,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    scene = new QGraphicsScene(this);
-    ui->graphicsView->setScene(scene);
-
-    QBrush greenBrush(Qt::green);
-    QBrush blueBrush(Qt::blue);
-    QPen outlinePen(Qt::black);
-    outlinePen.setWidth(2);
-
-    rectangle = scene->addRect(100, 0, 80, 100, outlinePen, blueBrush);
-
-    // addEllipse(x,y,w,h,pen,brush)
-    ellipse = scene->addEllipse(0, -100, 300, 60, outlinePen, greenBrush);
-    line = scene->addLine(100,100,120,120,outlinePen);
-
-    text = scene->addText("bogotobogo.com", QFont("Arial", 20) );
-    ui->graphicsView->scale(0.5,0.5);
-    //connect(this, SIGNAL(resizeEvent()), SLOT(resizeDone()));
+    ui->graphicsView->setScene(&drawer.scene);
     this->currentSize = this->size();
+
+//    { // saving to clipboard
+//        this->scene->clearSelection();
+//        // Create the image with the exact size of the shrunk scene
+//        QImage image(scene->sceneRect().size().toSize(), QImage::Format_ARGB32);
+//        image.fill(Qt::white);
+//        QPainter painter;
+//        painter.begin(&image);
+//        painter.setRenderHint(QPainter::Antialiasing);
+//        this->scene->render(&painter);
+//        painter.end();
+//        QApplication::clipboard()->setImage(image,QClipboard::Clipboard);
+//    }
+    { //creating menus
+        down = new QAction("down", this);
+        connect(down, SIGNAL(triggered()), this, SLOT(graphDown()));
+        up = new QAction("up", this);
+        connect(up, SIGNAL(triggered()), this, SLOT(graphUp()));
+        menu = menuBar()->addMenu("Graph");
+        menu->addAction(down);
+        menu->addAction(up);
+    }
+    drawer.draw(currentSize);
 }
 
 MainWindow::~MainWindow()
@@ -39,10 +46,16 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     {
         float yScale = 1.0*currentSize.height()/previousSize.height();
         float xScale = 1.0*currentSize.width()/previousSize.width();
-//        qDebug() << "original size w: " << previousSize.width() << " h : "<<previousSize.height();
-//        qDebug() << "current size w: " << currentSize.width() << " h : "<<currentSize.height();
-//        qDebug() << "xScale : " << xScale;
-//        qDebug() << "yScale : " << yScale;
         ui->graphicsView->scale(xScale, yScale);
     }
+}
+
+void MainWindow::graphDown()
+{
+    qDebug() << "Down";
+}
+
+void MainWindow::graphUp()
+{
+    qDebug() << "Up";
 }
